@@ -19,7 +19,7 @@ body {
 
 .player {
     width: 90%;
-    max-width: 350px;
+    max-width: 360px;
     background: #121212;
     border-radius: 20px;
     padding: 20px;
@@ -27,44 +27,72 @@ body {
     text-align: center;
 }
 
+.capa-container {
+    position: relative;
+}
+
 .capa {
     width: 100%;
     border-radius: 15px;
-    margin-bottom: 15px;
+}
+
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,0,0,0.9);
+    border: none;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.play-btn:hover {
+    background: red;
 }
 
 h1 {
     font-size: 18px;
-    margin: 10px 0;
+    margin: 15px 0 5px;
 }
 
-p {
+.prof {
     font-size: 13px;
     color: #bbb;
 }
 
 audio {
-    width: 100%;
+    display: none;
+}
+
+.controls {
     margin-top: 15px;
 }
 
-.btn-download {
-    display: inline-block;
-    margin-top: 15px;
+button {
     padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.download {
     background: #ff0000;
     color: white;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 14px;
 }
 
-.btn-download:hover {
-    background: #cc0000;
+.share {
+    background: #25D366;
+    color: white;
 }
 
 .footer {
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 11px;
     color: #666;
 }
@@ -76,23 +104,52 @@ audio {
 
 <div class="player">
 
-<img src="capa.jpg" class="capa">
+<div class="capa-container">
+    <img src="capa.jpg" class="capa">
+    <button class="play-btn" onclick="toggleAudio()">▶</button>
+</div>
 
 <h1>PROF: PODCAST EDUCAÇÃO FÍSICA</h1>
+<p class="prof">Profª: SEU NOME AQUI</p>
 
-<p>Conteúdo educativo para estudos 📚</p>
-
-<audio controls>
+<audio id="audio">
     <source src="audio.mp3" type="audio/mpeg">
 </audio>
 
-<a href="audio.mp3" class="btn-download" download>⬇️ Baixar áudio</a>
+<div class="controls">
+    <button class="download" onclick="downloadAudio()">⬇️ Baixar</button>
+    <button class="share" onclick="share()">📲 Compartilhar</button>
+</div>
 
 <div class="footer">
-Compartilhe com seus alunos 🎧
+Ouça e compartilhe com seus alunos 🎧
 </div>
 
 </div>
+
+<script>
+let audio = document.getElementById("audio");
+let btn = document.querySelector(".play-btn");
+
+function toggleAudio() {
+    if (audio.paused) {
+        audio.play();
+        btn.innerHTML = "⏸";
+    } else {
+        audio.pause();
+        btn.innerHTML = "▶";
+    }
+}
+
+function downloadAudio() {
+    window.location.href = "audio.mp3";
+}
+
+function share() {
+    let url = window.location.href;
+    window.open("https://wa.me/?text=Ouça este podcast: " + url);
+}
+</script>
 
 </body>
 </html>
