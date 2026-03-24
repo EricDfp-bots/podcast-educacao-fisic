@@ -23,7 +23,7 @@ body {
     background: #121212;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 0 30px rgba(255,0,0,0.3);
+    box-shadow: 0 0 40px rgba(255,0,0,0.4);
     text-align: center;
 }
 
@@ -44,29 +44,49 @@ body {
     background: rgba(255,0,0,0.9);
     border: none;
     border-radius: 50%;
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
     color: white;
     font-size: 30px;
     cursor: pointer;
+    animation: pulse 1.5s infinite;
 }
 
-.play-btn:hover {
-    background: red;
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(255,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
 }
 
 h1 {
     font-size: 18px;
-    margin: 15px 0 5px;
-}
-
-.prof {
-    font-size: 13px;
-    color: #bbb;
+    margin: 15px 0;
 }
 
 audio {
     display: none;
+}
+
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    border-radius: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    background: red;
+    width: 0%;
+    border-radius: 10px;
+}
+
+.time {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #bbb;
 }
 
 .controls {
@@ -110,11 +130,16 @@ button {
 </div>
 
 <h1>PROF: PODCAST EDUCAÇÃO FÍSICA</h1>
-<p class="prof">Profª: SEU NOME AQUI</p>
 
 <audio id="audio">
     <source src="audio.mp3" type="audio/mpeg">
 </audio>
+
+<div class="progress-container" onclick="setProgress(event)">
+    <div class="progress" id="progress"></div>
+</div>
+
+<div class="time" id="time">0:00 / 0:00</div>
 
 <div class="controls">
     <button class="download" onclick="downloadAudio()">⬇️ Baixar</button>
@@ -122,7 +147,7 @@ button {
 </div>
 
 <div class="footer">
-Ouça e compartilhe com seus alunos 🎧
+Ouça e compartilhe 🎧
 </div>
 
 </div>
@@ -130,6 +155,8 @@ Ouça e compartilhe com seus alunos 🎧
 <script>
 let audio = document.getElementById("audio");
 let btn = document.querySelector(".play-btn");
+let progress = document.getElementById("progress");
+let time = document.getElementById("time");
 
 function toggleAudio() {
     if (audio.paused) {
@@ -139,6 +166,28 @@ function toggleAudio() {
         audio.pause();
         btn.innerHTML = "▶";
     }
+}
+
+audio.addEventListener("timeupdate", () => {
+    let percent = (audio.currentTime / audio.duration) * 100;
+    progress.style.width = percent + "%";
+
+    let current = formatTime(audio.currentTime);
+    let duration = formatTime(audio.duration);
+    time.innerHTML = current + " / " + duration;
+});
+
+function setProgress(e) {
+    let width = e.currentTarget.clientWidth;
+    let clickX = e.offsetX;
+    audio.currentTime = (clickX / width) * audio.duration;
+}
+
+function formatTime(sec) {
+    if (!sec) return "0:00";
+    let m = Math.floor(sec / 60);
+    let s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" + s : s);
 }
 
 function downloadAudio() {
